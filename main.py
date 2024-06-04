@@ -12,22 +12,22 @@ class StorageObject:
 def cache(cache_size: int = 5):
     def cache_decorator(func):
         def wrapper(*args, **kwargs):
-            print('----')
+            print("----")
             key = func.__name__ + str((*args, *(kwargs.values())))
 
             value = STORAGE.get(key)
             if isinstance(value, StorageObject):
-                print('Get from storage')
+                print("Get from storage")
                 return value.value
 
             if cache_size == len(STORAGE):
                 key_for_delete = next(iter(STORAGE))
                 del STORAGE[key_for_delete]
 
-            print(f'Call function {func.__name__}')
+            print(f"Call function {func.__name__}")
             result = func(*args, **kwargs)
             STORAGE[key] = StorageObject(value=result, saved_at=time.time())
-            print('----')
+            print("----")
             return result
 
         return wrapper
@@ -48,3 +48,4 @@ def mult(a: list[int], b: list[int]) -> list[int]:
 print(sum([1], [2]))
 print(mult([1], [2]))
 print(sum([1], [2]))
+print(mult([1], [2]))
