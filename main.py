@@ -56,7 +56,7 @@ def cache_with_time(cache_time: int = 1) -> Callable:
             current_time = time.time()
 
             while storage:
-                _, storage_obj = next(iter(storage.items()))
+                storage_obj = next(iter(storage.values()))
                 if current_time - storage_obj.start_time > cache_time:
                     storage.popitem(last=False)
                 else:
