@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from functools import wraps
 from typing import Any, Callable, List
 import time
 import logging
@@ -23,6 +23,7 @@ def cache(cache_size: int = 1) -> Callable:
     def cache_decorator(func: Callable) -> Callable:
         storage: dict[str, StorageObject] = {}
 
+        @wraps(func)
         def wrapper(*args, **kwargs) -> Any:
             key = func.__name__ + str((*args, *(kwargs.values())))
 
@@ -56,6 +57,7 @@ def cache_with_time(cache_time: int = 1) -> Callable:
     def cache_with_time_decorator(func: Callable) -> Callable:
         storage: dict[str, StorageObject] = {}
 
+        @wraps(func)
         def wrapper(*args, **kwargs):
             current_time = time.time()
 
