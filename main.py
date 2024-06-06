@@ -61,10 +61,9 @@ def cache_with_time(cache_time: int = 1) -> Callable:
 
             while storage:
                 storage_obj = next(iter(storage.items()))
-                if current_time - storage_obj[1].start_time > cache_time:
-                    del storage[storage_obj[0]]
-                else:
+                if current_time - storage_obj[1].start_time <= cache_time:
                     break
+                del storage[storage_obj[0]]
 
             key = f"{func.__name__}{args}{kwargs}"
             if key in storage:
