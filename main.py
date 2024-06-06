@@ -1,9 +1,14 @@
 from collections import OrderedDict
 from typing import Any, Callable, List
 import time
+import logging
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
-class Storage:
+class StorageObject:
     def __init__(self, value: Any, start_time: float) -> None:
         self.value = value
         self.start_time = start_time
@@ -19,21 +24,21 @@ def cache(cache_size: int = 1) -> Callable:
         storage = {}
 
         def wrapper(*args, **kwargs) -> Any:
-            print("---------------------------")
             key = func.__name__ + str((*args, *(kwargs.values())))
 
             if key in storage:
-                print("Retrieving from cache")
-                return storage[key].value
+                storage_val = storage[key].value
+                logging.info(f"Retrieving from cache: {storage_val}")
+                return storage_val
 
             if len(storage) == cache_size:
                 key_for_delete = next(iter(storage))
                 del storage[key_for_delete]
 
-            print("Computing result")
+            logging.info("Computing result")
             result = func(*args, **kwargs)
 
-            storage[key] = Storage(result, time.time())
+            storage[key] = StorageObject(result, time.time())
 
             return result
 
@@ -49,10 +54,9 @@ TASK 3
 
 def cache_with_time(cache_time: int = 1) -> Callable:
     def cache_with_time_decorator(func: Callable) -> Callable:
-        storage: OrderedDict[str, Storage] = OrderedDict()
+        storage: OrderedDict[str, StorageObject] = OrderedDict()
 
         def wrapper(*args, **kwargs):
-            print("---------------------------")
             current_time = time.time()
 
             while storage:
@@ -64,13 +68,14 @@ def cache_with_time(cache_time: int = 1) -> Callable:
 
             key = f"{func.__name__}{args}{kwargs}"
             if key in storage:
-                print("Retrieving from cache")
-                return storage[key].value
+                storage_val = storage[key].value
+                logging.info(f"Retrieving from cache: {storage_val}")
+                return storage_val
 
-            print("Computing result")
+            logging.info("Computing result")
             result = func(*args, **kwargs)
 
-            storage[key] = Storage(result, current_time)
+            storage[key] = StorageObject(result, current_time)
 
             return result
 
