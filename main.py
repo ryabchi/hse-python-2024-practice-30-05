@@ -21,7 +21,7 @@ TASK 1 & 2
 
 def cache(cache_size: int = 1) -> Callable:
     def cache_decorator(func: Callable) -> Callable:
-        storage = {}
+        storage: dict[str, StorageObject] = {}
 
         def wrapper(*args, **kwargs) -> Any:
             key = func.__name__ + str((*args, *(kwargs.values())))
@@ -54,15 +54,15 @@ TASK 3
 
 def cache_with_time(cache_time: int = 1) -> Callable:
     def cache_with_time_decorator(func: Callable) -> Callable:
-        storage: OrderedDict[str, StorageObject] = OrderedDict()
+        storage: dict[str, StorageObject] = {}
 
         def wrapper(*args, **kwargs):
             current_time = time.time()
 
             while storage:
-                storage_obj = next(iter(storage.values()))
-                if current_time - storage_obj.start_time > cache_time:
-                    storage.popitem(last=False)
+                storage_obj = next(iter(storage.items()))
+                if current_time - storage_obj[1].start_time > cache_time:
+                    del storage[storage_obj[0]]
                 else:
                     break
 
