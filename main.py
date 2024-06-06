@@ -19,10 +19,8 @@ TASK 1 & 2
 """
 
 
-def cache(cache_size: int = 1) -> Callable:
+def cache(storage: dict[str, StorageObject], cache_size: int = 1) -> Callable:
     def cache_decorator(func: Callable) -> Callable:
-        storage: dict[str, StorageObject] = {}
-
         @wraps(func)
         def wrapper(*args, **kwargs) -> Any:
             key = func.__name__ + str((*args, *(kwargs.values())))
@@ -85,7 +83,7 @@ def cache_with_time(cache_time: int = 1) -> Callable:
     return cache_with_time_decorator
 
 
-@cache()
+@cache({})
 def some_sum_func(a: List[int], b: List[int]) -> None:
     return a + b
 
@@ -95,13 +93,5 @@ def some_reverse_func(a: List[int], b: List[int]) -> None:
     return (a + b)[::-1]
 
 
-print(some_sum_func([1], [2]))
-print(some_sum_func([1], [2]))
-print(some_sum_func([2], [3]))
-print(some_sum_func([1], [2]))
-
-print(some_reverse_func([1], [2]))
-print(some_reverse_func([1], [2]))
-print(some_reverse_func([2], [3]))
-time.sleep(2)
-print(some_reverse_func([1], [2]))
+def sum(a, b):
+    return a + b
